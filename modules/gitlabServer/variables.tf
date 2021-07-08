@@ -68,3 +68,7 @@ variable "admin_username" {
   default     = "azureuser"
   description = "admin_username"
 }
+
+variable "instance_gitlab_key" {
+  description = "key"
+}

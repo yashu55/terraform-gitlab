@@ -15,20 +15,24 @@ provider "azurerm" {
 
 
 # Create a resource group if it doesn't exist
-resource "azurerm_resource_group" "rg" {
-  name     = "gitlab_resource_group"
-  location = "West Europe"
+data "azurerm_resource_group" "rg" {
+  name = "gitlab_rg"
+}
 
-  tags = {
-    environment = "prod"
-  }
+data "azurerm_ssh_public_key" "gitlab_key" {
+  name                = "gitlab_key"
+  resource_group_name = data.azurerm_resource_group.rg.name
+}
+
+output "name" {
+  value = data.azurerm_ssh_public_key.gitlab_key.public_key
 }
 
 # Create public IPs
 resource "azurerm_public_ip" "public_ip" {
   name                = "gitlab_prod_public_ip"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = data.azurerm_resource_group.rg.name
   allocation_method   = "Dynamic" #Static
   #  sku                 = "Basic" # standard
   # ip_version          = "IPv4"
@@ -42,8 +46,8 @@ resource "azurerm_public_ip" "public_ip" {
 resource "azurerm_virtual_network" "vnet" {
   name                = "gitlab_prod_vnet"
   address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = data.azurerm_resource_group.rg.name
 
   tags = {
     environment = "prod"
@@ -53,16 +57,18 @@ resource "azurerm_virtual_network" "vnet" {
 # Create subnet
 resource "azurerm_subnet" "subnet" {
   name                 = "gitlab_prod_subnet"
-  resource_group_name  = azurerm_resource_group.rg.name
+  resource_group_name  = data.azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.1.0/24"]
 }
+
+
 
 module "prod_server" {
   source                       = "./modules/gitlabServer"
   location                     = "West Europe"
   environment                  = "gitlab_prod"
-  gitlab_resource_group_name   = azurerm_resource_group.rg.name
+  gitlab_resource_group_name   = data.azurerm_resource_group.rg.name
   network_security_group_name  = "nsgprod019"
   network_interface_name       = "nicprod019"
   subnet_id                    = azurerm_subnet.subnet.id
@@ -74,6 +80,7 @@ module "prod_server" {
   os_disk_storage_account_type = "Premium_LRS"
   computer_name                = "gitlabVmProd"
   admin_username               = "azureuser"
+  instance_gitlab_key          = data.azurerm_ssh_public_key.gitlab_key.public_key
 }
 
 output "instance_obj" {
@@ -82,6 +89,6 @@ output "instance_obj" {
 }
 
 output "instance_details" {
-  value = " ${module.prod_server.vm_ip} \n ${module.prod_server.vm_id} \n ${module.prod_server.tls_private_key}"
+  value = " ${module.prod_server.vm_ip} \n ${module.prod_server.vm_id}"
 }
 

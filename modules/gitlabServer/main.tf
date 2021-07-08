@@ -47,10 +47,10 @@ resource "azurerm_network_interface_security_group_association" "association" {
 }
 
 # Create (and display) an SSH key
-resource "tls_private_key" "gitlab_ssh" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
+# resource "tls_private_key" "gitlab_ssh" {
+#   algorithm = "RSA"
+#   rsa_bits  = 4096
+# }
 
 # Create virtual machine
 resource "azurerm_linux_virtual_machine" "gitlab_server" {
@@ -79,16 +79,17 @@ resource "azurerm_linux_virtual_machine" "gitlab_server" {
 
   admin_ssh_key {
     username   = var.admin_username
-    public_key = tls_private_key.gitlab_ssh.public_key_openssh
+    public_key = file("gitlab_public.pub")
   }
 
   tags = {
     environment = var.environment
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "echo Hello"
-    ]
-  }
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "sudo yum install git -y"
+  #   ]
+  #   on_failure = fail
+  # }
 }
