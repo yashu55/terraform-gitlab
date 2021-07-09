@@ -80,10 +80,17 @@ resource "azurerm_linux_virtual_machine" "gitlab_server" {
     environment = var.environment
   }
 
-  # provisioner "remote-exec" {
-  #   inline = [
-  #     "sudo yum install git -y"
-  #   ]
-  #   on_failure = fail
-  # }
+  provisioner "remote-exec" {
+    inline = [
+      "sudo yum install git -y"
+    ]
+    on_failure = fail
+    connection {
+      type        = "ssh"
+      host        = self.public_ip_address
+      user        = "azureuser"
+      private_key = file("gitlab_key.pem")
+    }
+
+  }
 }

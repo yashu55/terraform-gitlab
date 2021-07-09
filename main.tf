@@ -19,10 +19,6 @@ data "azurerm_resource_group" "rg" {
   name = "gitlab_rg"
 }
 
-output "name" {
-  value = data.azurerm_ssh_public_key.gitlab_key.public_key
-}
-
 # Create public IPs
 resource "azurerm_public_ip" "public_ip" {
   name                = "gitlab_prod_public_ip"
@@ -75,7 +71,7 @@ module "prod_server" {
   os_disk_storage_account_type = "Premium_LRS"
   computer_name                = "gitlabVmProd"
   admin_username               = "azureuser"
-  ssh_public_key_file_location          = "gitlab_public.pub"
+  ssh_public_key_file_location = "gitlab_public.pub"
 }
 
 output "instance_obj" {
