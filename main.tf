@@ -19,11 +19,6 @@ data "azurerm_resource_group" "rg" {
   name = "gitlab_rg"
 }
 
-data "azurerm_ssh_public_key" "gitlab_key" {
-  name                = "gitlab_key"
-  resource_group_name = data.azurerm_resource_group.rg.name
-}
-
 output "name" {
   value = data.azurerm_ssh_public_key.gitlab_key.public_key
 }
@@ -80,7 +75,7 @@ module "prod_server" {
   os_disk_storage_account_type = "Premium_LRS"
   computer_name                = "gitlabVmProd"
   admin_username               = "azureuser"
-  instance_gitlab_key          = data.azurerm_ssh_public_key.gitlab_key.public_key
+  ssh_public_key_file_location          = "gitlab_public.pub"
 }
 
 output "instance_obj" {

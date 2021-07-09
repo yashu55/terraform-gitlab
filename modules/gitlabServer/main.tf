@@ -46,12 +46,6 @@ resource "azurerm_network_interface_security_group_association" "association" {
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
-# Create (and display) an SSH key
-# resource "tls_private_key" "gitlab_ssh" {
-#   algorithm = "RSA"
-#   rsa_bits  = 4096
-# }
-
 # Create virtual machine
 resource "azurerm_linux_virtual_machine" "gitlab_server" {
   name                  = var.linux_virtual_machine_name
@@ -79,7 +73,7 @@ resource "azurerm_linux_virtual_machine" "gitlab_server" {
 
   admin_ssh_key {
     username   = var.admin_username
-    public_key = file("gitlab_public.pub")
+    public_key = file(var.ssh_public_key_file_location)
   }
 
   tags = {

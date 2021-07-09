@@ -69,6 +69,7 @@ variable "admin_username" {
   description = "admin_username"
 }
 
-variable "instance_gitlab_key" {
-  description = "key"
+variable "ssh_public_key_file_location" {
+  type = string
+  description = "ssh_public_key_file_location"
 }
