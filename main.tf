@@ -56,22 +56,23 @@ resource "azurerm_subnet" "subnet" {
 
 
 module "prod_server" {
-  source                       = "./modules/gitlabServer"
-  location                     = "West Europe"
-  environment                  = "gitlab_prod"
-  gitlab_resource_group_name   = data.azurerm_resource_group.rg.name
-  network_security_group_name  = "nsgprod019"
-  network_interface_name       = "nicprod019"
-  subnet_id                    = azurerm_subnet.subnet.id
-  public_ip_id                 = azurerm_public_ip.public_ip.id
-  linux_virtual_machine_name   = "linuxvm019"
-  instance_size                = "Standard_DS1_v2"
-  os_disk_name                 = "gitlab_prod_os_disk"
-  os_disk_caching_type         = "ReadWrite"
-  os_disk_storage_account_type = "Premium_LRS"
-  computer_name                = "gitlabVmProd"
-  admin_username               = "azureuser"
-  ssh_public_key_file_location = "gitlab_public.pub"
+  source                        = "./modules/gitlabServer"
+  location                      = "West Europe"
+  environment                   = "gitlab_prod"
+  gitlab_resource_group_name    = data.azurerm_resource_group.rg.name
+  network_security_group_name   = "nsgprod019"
+  network_interface_name        = "nicprod019"
+  subnet_id                     = azurerm_subnet.subnet.id
+  public_ip_id                  = azurerm_public_ip.public_ip.id
+  linux_virtual_machine_name    = "linuxvm019"
+  instance_size                 = "Standard_DS1_v2"
+  os_disk_name                  = "gitlab_prod_os_disk"
+  os_disk_caching_type          = "ReadWrite"
+  os_disk_storage_account_type  = "Premium_LRS"
+  computer_name                 = "gitlabVmProd"
+  admin_username                = "azureuser"
+  ssh_public_key_file_location  = "gitlab_public.pub"
+  ssh_private_key_file_location = "gitlab_key.pem"
 }
 
 output "instance_obj" {

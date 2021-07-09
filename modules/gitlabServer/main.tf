@@ -89,7 +89,7 @@ resource "azurerm_linux_virtual_machine" "gitlab_server" {
       type        = "ssh"
       host        = self.public_ip_address
       user        = "azureuser"
-      private_key = file("gitlab_key.pem")
+      private_key = file(var.ssh_public_key_file_location)
     }
 
   }

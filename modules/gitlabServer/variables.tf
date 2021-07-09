@@ -70,6 +70,11 @@ variable "admin_username" {
 }
 
 variable "ssh_public_key_file_location" {
-  type = string
+  type        = string
   description = "ssh_public_key_file_location"
+}
+
+variable "ssh_private_key_file_location" {
+  type        = string
+  description = "ssh_private_key_file_location"
 }
