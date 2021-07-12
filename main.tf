@@ -68,7 +68,8 @@ module "prod_server" {
   instance_size                 = "Standard_DS1_v2"
   os_disk_name                  = "gitlab_prod_os_disk"
   os_disk_caching_type          = "ReadWrite"
-  os_disk_storage_account_type  = "Premium_LRS"
+  os_disk_storage_account_type  = "Standard_LRS"
+  os_disk_size_gb               = 64
   computer_name                 = "gitlabVmProd"
   admin_username                = "azureuser"
   ssh_public_key_file_location  = "gitlab_public.pub"

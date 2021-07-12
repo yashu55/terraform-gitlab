@@ -58,6 +58,7 @@ resource "azurerm_linux_virtual_machine" "gitlab_server" {
     name                 = var.os_disk_name
     caching              = var.os_disk_caching_type
     storage_account_type = var.os_disk_storage_account_type
+    disk_size_gb          = var.os_disk_size_gb
   }
 
   source_image_reference {
@@ -89,7 +90,7 @@ resource "azurerm_linux_virtual_machine" "gitlab_server" {
       type        = "ssh"
       host        = self.public_ip_address
       user        = "azureuser"
-      private_key = file(var.ssh_public_key_file_location)
+      private_key = file(var.ssh_private_key_file_location)
     }
 
   }

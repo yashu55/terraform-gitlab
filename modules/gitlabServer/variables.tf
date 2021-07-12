@@ -58,6 +58,11 @@ variable "os_disk_storage_account_type" {
   description = "os_disk_caching_type"
 }
 
+variable "os_disk_size_gb" {
+  type        = number
+  description = "os_disk_size_gb"
+}
+
 variable "computer_name" {
   type        = string
   description = "computer_name"
