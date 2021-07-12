@@ -58,13 +58,13 @@ resource "azurerm_linux_virtual_machine" "gitlab_server" {
     name                 = var.os_disk_name
     caching              = var.os_disk_caching_type
     storage_account_type = var.os_disk_storage_account_type
-    disk_size_gb          = var.os_disk_size_gb
+    disk_size_gb         = var.os_disk_size_gb
   }
 
   source_image_reference {
-    publisher = "RedHat"
-    offer     = "RHEL"
-    sku       = "8.1"
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
     version   = "latest"
   }
 
@@ -81,9 +81,25 @@ resource "azurerm_linux_virtual_machine" "gitlab_server" {
     environment = var.environment
   }
 
+  provisioner "file" {
+    source      = "ansible-local.yml"
+    destination = "ansible-local.yml"
+    on_failure  = fail
+    connection {
+      type        = "ssh"
+      host        = self.public_ip_address
+      user        = "azureuser"
+      private_key = file(var.ssh_private_key_file_location)
+    }
+  }
+
   provisioner "remote-exec" {
     inline = [
-      "sudo yum install git -y"
+      "sudo apt update",
+      "sudo apt upgrade -y",
+      "sudo apt install ansible -y",
+      "ansible --version",
+      "ansible-playbook ansible-local.yml"
     ]
     on_failure = fail
     connection {
@@ -92,6 +108,5 @@ resource "azurerm_linux_virtual_machine" "gitlab_server" {
       user        = "azureuser"
       private_key = file(var.ssh_private_key_file_location)
     }
-
   }
 }

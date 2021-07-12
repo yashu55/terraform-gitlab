@@ -65,7 +65,7 @@ module "prod_server" {
   subnet_id                     = azurerm_subnet.subnet.id
   public_ip_id                  = azurerm_public_ip.public_ip.id
   linux_virtual_machine_name    = "linuxvm019"
-  instance_size                 = "Standard_DS1_v2"
+  instance_size                 = "Standard_D2s_v3"
   os_disk_name                  = "gitlab_prod_os_disk"
   os_disk_caching_type          = "ReadWrite"
   os_disk_storage_account_type  = "Standard_LRS"
